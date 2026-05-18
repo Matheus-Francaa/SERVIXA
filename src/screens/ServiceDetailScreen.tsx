@@ -1,7 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import React, { useState } from 'react';
 import {
-    Alert,
     Image,
     ScrollView,
     StatusBar,
@@ -14,6 +13,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { BottomTabBar } from '../components/BottomTabBar';
 import { colors } from '../theme/colors';
 import { spacing } from '../theme/spacing';
+import { Prestador } from '../types';
 
 export const ServiceDetailScreen: React.FC<{ navigation: any; route: any }> = ({
     navigation,
@@ -28,7 +28,17 @@ export const ServiceDetailScreen: React.FC<{ navigation: any; route: any }> = ({
             description:
                 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.',
             location: 'Centro · São Paulo',
+            prestador: 'João Silva',
+            avaliacao: '4.8',
+            avaliacoes: '95',
+            data: '15 de outubro de 2026',
         },
+    };
+
+    const prestadorInfo: Prestador = {
+        id: service.id || '1',
+        name: service.prestador || 'João Silva',
+        image: `https://picsum.photos/seed/prestador${service.id || '1'}/100/100`,
     };
 
     const [isFavorite, setIsFavorite] = useState(false);
@@ -38,7 +48,10 @@ export const ServiceDetailScreen: React.FC<{ navigation: any; route: any }> = ({
     };
 
     const handleChat = () => {
-        Alert.alert('Chat', 'Iniciar conversa com o prestador');
+        navigation.navigate('Chat', {
+            prestador: prestadorInfo,
+            conversationId: `conv_${service.id}`,
+        });
     };
 
     return (
@@ -134,8 +147,16 @@ export const ServiceDetailScreen: React.FC<{ navigation: any; route: any }> = ({
             <BottomTabBar
                 activeTab="home"
                 onTabPress={(tab) => {
-                    if (tab === 'announce') {
-                        navigation.navigate('Checkout');
+                    if (tab === 'home') {
+                        navigation.navigate('Home');
+                    } else if (tab === 'search') {
+                        navigation.navigate('Announcement');
+                    } else if (tab === 'chat') {
+                        handleChat();
+                    } else if (tab === 'announce') {
+                        navigation.navigate('Checkout', { service });
+                    } else if (tab === 'menu') {
+                        navigation.navigate('Settings');
                     }
                 }}
             />

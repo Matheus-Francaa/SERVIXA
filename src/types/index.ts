@@ -26,6 +26,12 @@ export interface PaymentMethod {
     iconColor: string;
 }
 
+export interface Prestador {
+    id: string;
+    name: string;
+    image: string;
+}
+
 export interface CheckoutData {
     serviceId: string;
     paymentMethod: PaymentMethod['id'];
@@ -36,12 +42,24 @@ export interface CheckoutData {
 
 export interface RootStackParamList {
     Home: undefined;
+    Announcement: undefined;
     ServiceDetail: {
         service: Service;
     };
     Checkout: {
         service: Service;
     };
+    Success: {
+        service: Service;
+        paymentMethod: 'pix' | 'credit' | 'debit';
+        amount: number;
+    };
+    ChatList: undefined;
+    Chat: {
+        prestador: Prestador;
+        conversationId: string;
+    };
+    Settings: undefined;
     [key: string]: undefined | any;
 }
 

@@ -1,7 +1,6 @@
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useState } from 'react';
 import {
-    Alert,
     Image,
     ScrollView,
     StatusBar,
@@ -71,23 +70,11 @@ export const CheckoutScreen: React.FC<{ navigation: any; route: any }> = ({
         ];
 
     const handlePayment = () => {
-        Alert.alert(
-            'Sucesso!',
-            `Pagamento de R$ ${totalValue.toFixed(2)} realizado com sucesso!\n\nForma de pagamento: ${selectedPayment === 'pix'
-                ? 'Pix'
-                : selectedPayment === 'credit'
-                    ? 'Cartão de Crédito'
-                    : 'Cartão de Débito'
-            }`,
-            [
-                {
-                    text: 'OK',
-                    onPress: () => {
-                        navigation.navigate('Home');
-                    },
-                },
-            ]
-        );
+        navigation.navigate('Success', {
+            service,
+            paymentMethod: selectedPayment,
+            amount: totalValue,
+        });
     };
 
     return (
@@ -190,8 +177,14 @@ export const CheckoutScreen: React.FC<{ navigation: any; route: any }> = ({
             <BottomTabBar
                 activeTab="home"
                 onTabPress={(tab) => {
-                    if (tab === 'announce') {
-                        navigation.navigate('Checkout');
+                    if (tab === 'home') {
+                        navigation.navigate('Home');
+                    } else if (tab === 'search') {
+                        navigation.navigate('Announcement');
+                    } else if (tab === 'chat') {
+                        navigation.navigate('ChatList');
+                    } else if (tab === 'menu') {
+                        navigation.navigate('Settings');
                     }
                 }}
             />

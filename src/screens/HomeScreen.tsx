@@ -184,8 +184,14 @@ export const HomeScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
             <BottomTabBar
                 activeTab="home"
                 onTabPress={(tab) => {
-                    if (tab === 'announce') {
+                    if (tab === 'search') {
+                        navigation.navigate('Announcement');
+                    } else if (tab === 'chat') {
+                        navigation.navigate('ChatList');
+                    } else if (tab === 'announce') {
                         navigation.navigate('Checkout');
+                    } else if (tab === 'menu') {
+                        navigation.navigate('Settings');
                     }
                 }}
             />

@@ -154,7 +154,7 @@ export const ServiceDetailScreen: React.FC<{ navigation: any; route: any }> = ({
                     } else if (tab === 'chat') {
                         handleChat();
                     } else if (tab === 'announce') {
-                        navigation.navigate('Checkout', { service });
+                        navigation.navigate('CreateService');
                     } else if (tab === 'menu') {
                         navigation.navigate('Settings');
                     }

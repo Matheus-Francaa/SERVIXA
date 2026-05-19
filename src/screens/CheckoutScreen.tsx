@@ -183,6 +183,8 @@ export const CheckoutScreen: React.FC<{ navigation: any; route: any }> = ({
                         navigation.navigate('Announcement');
                     } else if (tab === 'chat') {
                         navigation.navigate('ChatList');
+                    } else if (tab === 'announce') {
+                        navigation.navigate('CreateService');
                     } else if (tab === 'menu') {
                         navigation.navigate('Settings');
                     }

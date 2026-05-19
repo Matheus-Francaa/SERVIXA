@@ -172,6 +172,8 @@ export const AnnouncementScreen: React.FC<{ navigation: any }> = ({ navigation }
                         navigation.navigate('Home');
                     } else if (tab === 'chat') {
                         navigation.navigate('ChatList');
+                    } else if (tab === 'announce') {
+                        navigation.navigate('CreateService');
                     } else if (tab === 'menu') {
                         navigation.navigate('Settings');
                     }

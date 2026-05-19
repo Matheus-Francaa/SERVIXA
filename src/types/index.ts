@@ -60,6 +60,7 @@ export interface RootStackParamList {
         conversationId: string;
     };
     Settings: undefined;
+    CreateService: undefined;
     [key: string]: undefined | any;
 }
 

@@ -189,7 +189,7 @@ export const HomeScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
                     } else if (tab === 'chat') {
                         navigation.navigate('ChatList');
                     } else if (tab === 'announce') {
-                        navigation.navigate('Checkout');
+                        navigation.navigate('CreateService');
                     } else if (tab === 'menu') {
                         navigation.navigate('Settings');
                     }

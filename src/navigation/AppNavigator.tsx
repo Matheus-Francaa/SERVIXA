@@ -4,6 +4,7 @@ import { AnnouncementScreen } from '../screens/AnnouncementScreen';
 import { ChatListScreen } from '../screens/ChatListScreen';
 import { ChatScreen } from '../screens/ChatScreen';
 import { CheckoutScreen } from '../screens/CheckoutScreen';
+import { CreateServiceScreen } from '../screens/CreateServiceScreen';
 import { HomeScreen } from '../screens/HomeScreen';
 import { ServiceDetailScreen } from '../screens/ServiceDetailScreen';
 import { SettingsScreen } from '../screens/SettingsScreen';
@@ -28,6 +29,7 @@ export const AppNavigator: React.FC = () => {
             <Stack.Screen name="ChatList" component={ChatListScreen} />
             <Stack.Screen name="Chat" component={ChatScreen} />
             <Stack.Screen name="Settings" component={SettingsScreen} />
+            <Stack.Screen name="CreateService" component={CreateServiceScreen} />
         </Stack.Navigator>
     );
 };

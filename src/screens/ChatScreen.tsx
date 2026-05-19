@@ -231,6 +231,8 @@ export const ChatScreen: React.FC<{ navigation: any; route: any }> = ({
                         navigation.navigate('Home');
                     } else if (tab === 'search') {
                         navigation.navigate('Announcement');
+                    } else if (tab === 'announce') {
+                        navigation.navigate('CreateService');
                     } else if (tab === 'menu') {
                         navigation.navigate('Settings');
                     }

@@ -299,6 +299,8 @@ export const SettingsScreen: React.FC<{ navigation: any }> = ({ navigation }) =>
                         navigation.navigate('Announcement');
                     } else if (tab === 'chat') {
                         navigation.navigate('ChatList');
+                    } else if (tab === 'announce') {
+                        navigation.navigate('CreateService');
                     }
                 }}
             />

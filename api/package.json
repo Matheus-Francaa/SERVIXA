@@ -1,0 +1,30 @@
+{
+  "name": "servixa-api",
+  "version": "1.0.0",
+  "description": "Servixa API - Express + Drizzle + Better-Auth",
+  "scripts": {
+    "start": "node --env-file ../.env --import tsx index.ts",
+    "dev": "node --env-file ../.env --import tsx --watch index.ts",
+    "seed": "node --import tsx db/seed.ts",
+    "db:push": "drizzle-kit push",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.33.0",
+  "dependencies": {
+    "@better-auth/drizzle-adapter": "^1.6.11",
+    "better-auth": "^1.6.11",
+    "better-sqlite3": "^12.10.0",
+    "cors": "^2.8.5",
+    "drizzle-kit": "^0.31.10",
+    "drizzle-orm": "^0.45.2",
+    "express": "^5.2.1",
+    "sqlite3": "^6.0.1"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.0"
+  }
+}

@@ -21,7 +21,7 @@ const prestadorNameMap: Record<string, string> = {
 async function signup(data: { name: string; email: string; password: string }) {
   const res = await fetch(`${BASE}/auth/sign-up/email`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", Origin: "http://localhost:3000" },
     body: JSON.stringify(data),
   });
   const body = await res.json();

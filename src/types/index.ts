@@ -11,6 +11,8 @@ export interface Service {
     avaliacao?: string;
     avaliacoes?: string;
     data?: string;
+    userId?: string;
+    categoryId?: number;
 }
 
 export interface Category {
@@ -41,6 +43,8 @@ export interface CheckoutData {
 }
 
 export interface RootStackParamList {
+    Login: undefined;
+    Register: undefined;
     Home: undefined;
     Announcement: undefined;
     ServiceDetail: {

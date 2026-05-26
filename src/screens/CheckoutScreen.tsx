@@ -27,12 +27,7 @@ export const CheckoutScreen: React.FC<{ navigation: any; route: any }> = ({
     const [selectedPayment, setSelectedPayment] = useState('pix');
     const [processing, setProcessing] = useState(false);
 
-    const parsePrice = (price: string): number => {
-        const cleaned = price.replace(/[R$\s.,]/g, (m) => (m === ',' ? '.' : ''));
-        const num = parseFloat(cleaned);
-        return isNaN(num) ? 150.0 : num;
-    };
-    const serviceValue = parsePrice(service?.price || 'R$ 150,00');
+    const serviceValue = Number(service?.price ?? 150);
     const serviceFee = +(serviceValue * 0.08).toFixed(2);
     const totalValue = +(serviceValue + serviceFee).toFixed(2);
 

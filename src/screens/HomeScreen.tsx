@@ -29,8 +29,19 @@ export const HomeScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
 
     useEffect(() => {
         api.categories.list().then(setCategories).catch(() => {});
-        api.services.list().then(setServices).catch(() => {});
     }, []);
+
+    useEffect(() => {
+        api.services.list(selectedCategory === '1' ? undefined : selectedCategory)
+            .then(setServices)
+            .catch(() => {});
+    }, [selectedCategory]);
+
+    const filteredServices = searchQuery.trim()
+        ? services.filter((s) =>
+            s.title.toLowerCase().includes(searchQuery.toLowerCase())
+          )
+        : services;
 
     const handleServicePress = (service: any) => {
         navigation.navigate('ServiceDetail', { service });
@@ -108,7 +119,7 @@ export const HomeScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
                 <View style={styles.sectionContainer}>
                     <Text style={styles.sectionTitle}>Serviços mais procurados este mês</Text>
                     <FlatList
-                        data={services}
+                        data={filteredServices}
                         horizontal
                         showsHorizontalScrollIndicator={false}
                         renderItem={({ item }) => (
@@ -129,7 +140,7 @@ export const HomeScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
                 <View style={styles.sectionContainer}>
                     <Text style={styles.sectionTitle}>Ofertas Especiais</Text>
                     <FlatList
-                        data={services.slice(2)}
+                        data={filteredServices.slice(2)}
                         horizontal
                         showsHorizontalScrollIndicator={false}
                         renderItem={({ item }) => (

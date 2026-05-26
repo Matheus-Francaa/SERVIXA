@@ -1,5 +1,5 @@
 import ngrok from "@ngrok/ngrok";
-import { config } from "./config.js";
+import { config } from "./config.ts";
 
 const authtoken = process.env.NGROK_AUTHTOKEN;
 
@@ -11,7 +11,7 @@ if (!authtoken) {
 try {
   const listener = await ngrok.forward({
     addr: config.port,
-    authtoken,
+    authtoken: authtoken,
   });
 
   console.log(`Ingress established at ${listener.url()}`);

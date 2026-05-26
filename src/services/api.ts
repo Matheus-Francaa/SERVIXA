@@ -63,7 +63,7 @@ async function signInRequest(path: string, options: RequestInit = {}) {
     throw new Error(`Resposta inválida do servidor (${url}): ${body.slice(0, 200)}`);
   }
   if (!res.ok) throw new Error(data.message || data.error || `Erro ${res.status}`);
-  if (data.token) await setToken(data.token);
+  if (data.session?.token) await setToken(data.session.token);
   return data;
 }
 
@@ -80,7 +80,7 @@ export const api = {
     list: (category?: string) =>
       request(`/services${category ? `?category=${category}` : ""}`),
     get: (id: string) => request(`/services/${id}`),
-    create: (data: { title: string; description: string; price: string; location: string; imageUrl?: string; categoryId: number | string }) =>
+    create: (data: { title: string; description: string; price: number; location: string; imageUrl?: string; categoryId: number | string }) =>
       request("/services", { method: "POST", body: JSON.stringify(data) }),
     toggleFavorite: (id: string) => request(`/services/${id}/favorite`, { method: "POST" }),
     getFavoriteStatus: (id: string) => request(`/services/${id}/favorite`),

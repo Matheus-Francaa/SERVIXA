@@ -1,6 +1,6 @@
 import { Router } from "express";
 import crypto from "node:crypto";
-import { eq, sql } from "drizzle-orm";
+import { eq, desc, sql } from "drizzle-orm";
 import type { DB } from "../types.js";
 import type { AuthInstance } from "../auth.js";
 import { services, favorites } from "../schema.js";
@@ -20,7 +20,7 @@ export function createServicesRouter(db: DB, auth: AuthInstance): Router {
       .select()
       .from(services)
       .where(where)
-      .orderBy(sql`random()`);
+      .orderBy(desc(services.createdAt));
 
     res.json(result);
   });

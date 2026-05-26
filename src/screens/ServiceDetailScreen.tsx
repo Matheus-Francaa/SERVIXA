@@ -99,7 +99,7 @@ export const ServiceDetailScreen: React.FC<{ navigation: any; route: any }> = ({
                         <View style={styles.badge}><Text style={styles.badgeEmoji}>🗓</Text><Text style={styles.badgeText}>Parcelamento</Text></View>
                         <View style={styles.badge}><Text style={styles.badgeEmoji}>🛡</Text><Text style={styles.badgeText}>Garantia</Text></View>
                     </View>
-                    <Text style={styles.price}>{service?.price}</Text>
+                    <Text style={styles.price}>R$ {Number(service?.price || 0).toFixed(2).replace('.', ',')}</Text>
                     <View style={styles.descriptionSection}>
                         <Text style={styles.sectionTitle}>Descrição</Text>
                         <Text style={styles.descriptionText}>{service?.description}</Text>

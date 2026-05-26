@@ -59,7 +59,7 @@ export const services = sqliteTable("services", {
   id: text("id").primaryKey(),
   title: text("title").notNull(),
   description: text("description"),
-  price: text("price").notNull(),
+  price: real("price").notNull(),
   location: text("location").notNull(),
   imageUrl: text("imageUrl").notNull(),
   prestador: text("prestador"),

@@ -3,7 +3,7 @@
 export interface Service {
     id: string;
     title: string;
-    price: string;
+    price: number;
     location: string;
     imageUrl: string;
     description?: string;

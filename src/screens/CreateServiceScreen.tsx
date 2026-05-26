@@ -45,7 +45,7 @@ export const CreateServiceScreen: React.FC<{ navigation: any }> = ({
             await api.services.create({
                 title: serviceName,
                 description,
-                price: `R$ ${price.toFixed(2).replace('.', ',')}`,
+                price,
                 location: 'Centro · São Paulo',
                 imageUrl: imageUrl || undefined,
                 categoryId: selectedCategory,

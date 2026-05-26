@@ -29,7 +29,6 @@ export const SettingsScreen: React.FC<{ navigation: any }> = ({ navigation }) =>
                 style: 'destructive',
                 onPress: async () => {
                     await signOut();
-                    navigation.reset({ index: 0, routes: [{ name: 'Login' }] });
                 },
             },
         ]);

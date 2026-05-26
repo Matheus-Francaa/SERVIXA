@@ -1,50 +1,142 @@
-# Welcome to your Expo app 👋
+# SERVIXA
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Marketplace de serviços domésticos.
 
-## Get started
+## Stack
 
-1. Install dependencies
+- **Frontend:** React Native (Expo SDK 54), React Navigation
+- **Backend:** Express 5, Drizzle ORM, Better-Auth, SQLite
+- **Linguagem:** TypeScript
 
-   ```bash
-   npm install
-   ```
-
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+## Setup
 
 ```bash
-npm run reset-project
+# Instalar dependências do frontend
+pnpm install
+
+# Instalar dependências do backend
+cd api && pnpm install && cd ..
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## Ambiente
 
-## Learn more
+```bash
+cp .env.example .env
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+Ajuste as URLs no `.env` conforme necessário.
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+## Rodar a API
 
-## Join the community
+### Sem Docker
 
-Join our community of developers creating universal apps.
+```bash
+cd api
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+# Criar as tabelas no banco
+pnpm db:push
+
+# Popular com dados de demonstração
+pnpm seed
+pnpm seed:users
+
+# Iniciar servidor (http://localhost:3000)
+pnpm dev
+```
+
+### Com Docker
+
+```bash
+cd api
+
+# Build e iniciar
+docker compose up -d
+
+# Ver logs
+docker compose logs -f
+
+# Parar
+docker compose down
+```
+
+A API roda em `http://localhost:3000`. O banco SQLite fica em um volume Docker.
+
+### Com Docker + ngrok (túnel para dispositivo físico)
+
+```bash
+cd api
+
+# Configure o token no .env
+# NGROK_AUTHTOKEN=seu-token-aqui
+
+# Inicie com ngrok
+docker compose --profile tunnel up -d
+
+# Acesse o dashboard ngrok em http://localhost:4040
+# para ver a URL pública gerada
+```
+
+Com o túnel ativo, atualize o `.env` com a URL pública do ngrok para o frontend.
+
+## Rodar o frontend
+
+Com a API rodando, em outro terminal:
+
+```bash
+npx expo start
+```
+
+## Credenciais de demonstração
+
+- **Email:** `demo@servixa.com`
+- **Senha:** `servixa123`
+
+## Scripts da API
+
+| Comando | Descrição |
+|---|---|
+| `pnpm dev` | Iniciar servidor com hot-reload |
+| `pnpm start` | Iniciar servidor |
+| `pnpm test` | Rodar testes |
+| `pnpm typecheck` | Verificar tipos |
+| `pnpm lint` | Rodar ESLint |
+| `pnpm db:push` | Sincronizar schema com o banco |
+| `pnpm seed` | Popular categorias e serviços |
+| `pnpm seed:users` | Criar usuários de demonstração |
+
+## ngrok
+
+Para testar o app em um **dispositivo físico** (Android/iOS), você precisa expor a API com ngrok.
+
+### Opção 1: ngrok local (sem Docker)
+
+1. Instale o ngrok: [https://ngrok.com/download](https://ngrok.com/download)
+2. Inicie o túnel:
+   ```bash
+   ngrok http 3000
+   ```
+3. Copie a URL HTTPS gerada (ex: `https://abc123.ngrok-free.dev`)
+4. Atualize o `.env`:
+   ```env
+   BASE_URL=https://abc123.ngrok-free.dev
+   EXPO_PUBLIC_API_URL=https://abc123.ngrok-free.dev/api
+   BETTER_AUTH_TRUSTED_ORIGINS=https://abc123.ngrok-free.dev
+   ```
+5. Reinicie a API: `cd api && pnpm dev`
+
+### Opção 2: ngrok via Docker
+
+```bash
+cd api
+
+# Configure o token no .env
+echo "NGROK_AUTHTOKEN=seu-token" >> ../.env
+
+# Inicie com tunnel
+docker compose --profile tunnel up -d
+
+# Veja a URL no dashboard
+open http://localhost:4040
+```
+
+O frontend (Expo) lê `EXPO_PUBLIC_API_URL` do `.env` para saber para onde apontar as requisições.

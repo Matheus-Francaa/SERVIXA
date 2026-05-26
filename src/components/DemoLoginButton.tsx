@@ -11,7 +11,7 @@ import { spacing } from "../theme/spacing";
 import { useAuth } from "../contexts/AuthContext";
 
 const DEMO_EMAIL = "demo@servixa.com";
-const DEMO_PASSWORD = "123456";
+const DEMO_PASSWORD = "servixa123";
 
 interface Props {
   onSuccess: () => void;

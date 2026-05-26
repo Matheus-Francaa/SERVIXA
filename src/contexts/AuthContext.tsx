@@ -28,33 +28,35 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     (async () => {
-      const token = await storage.getToken();
-      if (token) {
-        try {
-          const data: any = await api.auth.getSession();
-          if (data?.user) setUser(data.user);
-          else await storage.removeToken();
-        } catch {
-          await storage.removeToken();
-        }
-      }
+      const [token, savedUser] = await Promise.all([
+        storage.getToken(),
+        storage.getUser(),
+      ]);
+      if (token && savedUser) setUser(savedUser);
+      else if (token) await storage.removeToken();
       setLoading(false);
     })();
   }, []);
 
   const signIn = useCallback(async (email: string, password: string) => {
     const data: any = await api.auth.signIn({ email, password });
-    if (data?.user) setUser(data.user);
+    if (data?.user) {
+      setUser(data.user);
+      await storage.setUser(data.user);
+    }
   }, []);
 
   const signUp = useCallback(async (name: string, email: string, password: string) => {
     const data: any = await api.auth.signUp({ name, email, password });
-    if (data?.user) setUser(data.user);
+    if (data?.user) {
+      setUser(data.user);
+      await storage.setUser(data.user);
+    }
   }, []);
 
   const signOut = useCallback(async () => {
     try { await api.auth.signOut(); } catch {}
-    await storage.removeToken();
+    await Promise.all([storage.removeToken(), storage.removeUser()]);
     setUser(null);
   }, []);
 

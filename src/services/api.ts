@@ -63,7 +63,7 @@ async function signInRequest(path: string, options: RequestInit = {}) {
     throw new Error(`Resposta inválida do servidor (${url}): ${body.slice(0, 200)}`);
   }
   if (!res.ok) throw new Error(data.message || data.error || `Erro ${res.status}`);
-  if (data.session?.token) await setToken(data.session.token);
+  if (data.token) await setToken(data.token);
   return data;
 }
 
@@ -74,7 +74,7 @@ export const api = {
     signIn: (data: { email: string; password: string }) =>
       signInRequest("/auth/sign-in/email", { method: "POST", body: JSON.stringify(data) }),
     signOut: () => request("/auth/sign-out", { method: "POST" }),
-    getSession: () => request("/auth/session"),
+    getSession: () => request("/auth/get-session"),
   },
   services: {
     list: (category?: string) =>

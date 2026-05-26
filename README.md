@@ -61,22 +61,6 @@ docker compose down
 
 A API roda em `http://localhost:3000`. O banco SQLite fica em um volume Docker.
 
-### Com Docker + ngrok (túnel para dispositivo físico)
-
-```bash
-cd api
-
-# Configure o token no .env
-# NGROK_AUTHTOKEN=seu-token-aqui
-
-# Inicie com ngrok
-docker compose --profile tunnel up -d
-
-# Acesse o dashboard ngrok em http://localhost:4040
-# para ver a URL pública gerada
-```
-
-Com o túnel ativo, atualize o `.env` com a URL pública do ngrok para o frontend.
 
 ## Rodar o frontend
 

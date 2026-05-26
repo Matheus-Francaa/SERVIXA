@@ -1,34 +1,26 @@
-const Database = require("better-sqlite3");
-const { drizzle } = require("drizzle-orm/better-sqlite3");
-const crypto = require("crypto");
-const schema = require("./schema");
+import Database from "better-sqlite3";
+import { drizzle } from "drizzle-orm/better-sqlite3";
+import crypto from "node:crypto";
+import * as schema from "../schema.js";
+import { config } from "../config.js";
 
-const sqlite = new Database("./servixa.db");
+const sqlite = new Database(config.dbPath);
 const db = drizzle(sqlite, { schema });
 
 async function seed() {
   console.log("Seeding database...");
 
-  const existingCats = db.select().from(schema.categories).all();
+  const existingCats = await db.select().from(schema.categories);
   if (existingCats.length > 0) {
     console.log("Database already seeded, skipping.");
     return;
   }
 
-  db.insert(schema.categories).values([
+  await db.insert(schema.categories).values([
     { id: 1, label: "Limpeza" },
     { id: 2, label: "Encanamento" },
     { id: 3, label: "Elétrica" },
-  ]).run();
-
-  const prestadores = [
-    { name: "João Silva", email: "joao@email.com" },
-    { name: "Carlos Mendes", email: "carlos@email.com" },
-    { name: "Pedro Santos", email: "pedro@email.com" },
-    { name: "Maria Costa", email: "maria@email.com" },
-    { name: "André Oliveira", email: "andre@email.com" },
-    { name: "Roberto Dias", email: "roberto@email.com" },
-  ];
+  ]);
 
   const servicesData = [
     { title: "Limpeza Residencial Completa", price: "R$ 250", location: "Centro · São Paulo", imageUrl: "https://picsum.photos/seed/service1/400/300", description: "Limpeza profissional completa de residências incluindo todos os cômodos, sanitização e organização.", categoryId: 1, prestador: "João Silva", avaliacao: "4.8", avaliacoes: "156", data: "15 de outubro de 2026" },
@@ -41,11 +33,11 @@ async function seed() {
   ];
 
   for (const svc of servicesData) {
-    db.insert(schema.services).values({
+    await db.insert(schema.services).values({
       id: crypto.randomUUID(),
       ...svc,
       createdAt: new Date().toISOString(),
-    }).run();
+    });
   }
 
   console.log("Seed complete!");

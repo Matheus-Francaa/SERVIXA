@@ -1,0 +1,30 @@
+services:
+  api:
+    build: .
+    ports:
+      - "3000:3000"
+    volumes:
+      - servixa-data:/app/data
+      - ../.env:/.env:ro
+    environment:
+      - BASE_URL=http://localhost:3000
+      - SERVIXA_DB_PATH=/app/data/servixa.db
+      - BETTER_AUTH_TRUSTED_ORIGINS=http://localhost:3000,http://localhost:8081
+      - PORT=3000
+    restart: unless-stopped
+
+  ngrok:
+    image: ngrok/ngrok:latest
+    command: http api:3000 --domain=${NGROK_DOMAIN:-}
+    environment:
+      - NGROK_AUTHTOKEN=${NGROK_AUTHTOKEN:-}
+    ports:
+      - "4040:4040"
+    depends_on:
+      - api
+    profiles:
+      - tunnel
+    restart: unless-stopped
+
+volumes:
+  servixa-data:

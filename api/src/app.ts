@@ -23,7 +23,7 @@ export function createApp(deps?: Deps): Express {
 
   app.use(cors({ origin: config.trustedOrigins }));
 
-  app.use("/api/auth", toNodeHandler(getAuthInstance()));
+  app.all("/api/auth/*splat", toNodeHandler(getAuthInstance()));
 
   app.use(express.json());
 

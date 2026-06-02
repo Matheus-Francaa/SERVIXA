@@ -23,28 +23,112 @@ Na saída, você encontrará opções para abrir o app em:
 - [simulador iOS](https://docs.expo.dev/workflow/ios-simulator/)
 - [Expo Go](https://expo.dev/go), um sandbox limitado para experimentar o desenvolvimento de app com Expo
 
-Você pode começar a desenvolver editando os arquivos dentro do diretório **app**. Este projeto usa [roteamento baseado em arquivos](https://docs.expo.dev/router/introduction).
 
-## Obtenha um projeto novo
+Marketplace de serviços domésticos.
 
-Quando estiver pronto, execute:
+## Stack
+
+- **Frontend:** React Native (Expo SDK 54), React Navigation
+- **Backend:** Express 5, Drizzle ORM, Better-Auth, SQLite
+- **Linguagem:** TypeScript
+
+## Setup
 
 ```bash
-npm run reset-project
+# Instalar dependências do frontend
+pnpm install
+
+# Instalar dependências do backend
+cd api && pnpm install && cd ..
 ```
 
-Este comando moverá o código inicial para o diretório **app-example** e criará um diretório **app** em branco onde você pode começar a desenvolver.
 
-## Saiba mais
+## Ambiente
 
-Para aprender mais sobre o desenvolvimento do seu projeto com Expo, consulte os seguintes recursos:
+```bash
+cp .env.example .env
+```
 
-- [Documentação do Expo](https://docs.expo.dev/): Aprenda o básico, ou explore tópicos avançados com nossos [guias](https://docs.expo.dev/guides).
-- [Tutorial Expo](https://docs.expo.dev/tutorial/introduction/): Siga um tutorial passo-a-passo onde você criará um projeto que funciona no Android, iOS e na web.
+Ajuste as URLs no `.env` conforme necessário.
 
-## Junte-se à comunidade
+## Rodar a API
 
-Junte-se à nossa comunidade de desenvolvedores criando apps universais.
+### Sem Docker
 
-- [Expo no GitHub](https://github.com/expo/expo): Veja nossa plataforma de código aberto e contribua.
-- [Comunidade Discord](https://chat.expo.dev): Converse com usuários do Expo e faça perguntas.
+```bash
+cd api
+
+# Criar as tabelas no banco
+pnpm db:push
+
+# Popular com dados de demonstração
+pnpm seed
+pnpm seed:users
+
+# Iniciar servidor (http://localhost:3000)
+pnpm dev
+```
+
+### Com Docker
+
+```bash
+cd api
+
+# Build e iniciar
+docker compose up -d
+
+# Ver logs
+docker compose logs -f
+
+# Parar
+docker compose down
+```
+
+A API roda em `http://localhost:3000`. O banco SQLite fica em um volume Docker.
+
+
+## Rodar o frontend
+
+Com a API rodando, em outro terminal:
+
+```bash
+npx expo start
+```
+
+## Scripts da API
+
+| Comando | Descrição |
+|---|---|
+| `pnpm dev` | Iniciar servidor com hot-reload |
+| `pnpm start` | Iniciar servidor |
+| `pnpm test` | Rodar testes |
+| `pnpm typecheck` | Verificar tipos |
+| `pnpm lint` | Rodar ESLint |
+| `pnpm db:push` | Sincronizar schema com o banco |
+| `pnpm seed` | Popular categorias e serviços |
+| `pnpm seed:users` | Criar usuários de demonstração |
+
+## ngrok
+
+Para testar o app em um **dispositivo físico** (Android/iOS), você precisa expor a API com ngrok.
+
+### Opção 1: ngrok local (sem Docker)
+
+1. Instale o ngrok: [https://ngrok.com/download](https://ngrok.com/download)
+2. Inicie o túnel:
+   ```bash
+   ngrok http 3000
+   ```
+3. Copie a URL HTTPS gerada (ex: `https://abc123.ngrok-free.dev`)
+4. Atualize o `.env`:
+   ```env
+   BASE_URL=https://abc123.ngrok-free.dev
+   EXPO_PUBLIC_API_URL=https://abc123.ngrok-free.dev/api
+   BETTER_AUTH_TRUSTED_ORIGINS=https://abc123.ngrok-free.dev
+   ```
+5. Reinicie a API: `cd api && pnpm dev`
+
+```
+
+O frontend (Expo) lê `EXPO_PUBLIC_API_URL` do `.env` para saber para onde apontar as requisições.
+>>>>>>> api

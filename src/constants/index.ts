@@ -4,7 +4,7 @@ export const MOCK_SERVICES = [
     {
         id: '1',
         title: 'Limpeza Residencial Completa',
-        price: 'R$ 250',
+        price: 250,
         location: 'Centro · São Paulo',
         imageUrl: 'https://picsum.photos/seed/service1/400/300',
         description:
@@ -17,7 +17,7 @@ export const MOCK_SERVICES = [
     {
         id: '2',
         title: 'Serviço de Encanamento Urgente',
-        price: 'R$ 150',
+        price: 150,
         location: 'Vila Madalena · São Paulo',
         imageUrl: 'https://picsum.photos/seed/service2/400/300',
         description:
@@ -30,7 +30,7 @@ export const MOCK_SERVICES = [
     {
         id: '3',
         title: 'Instalação Elétrica Residencial',
-        price: 'R$ 320',
+        price: 320,
         location: 'Pinheiros · São Paulo',
         imageUrl: 'https://picsum.photos/seed/service3/400/300',
         description:
@@ -43,7 +43,7 @@ export const MOCK_SERVICES = [
     {
         id: '4',
         title: 'Reparo em Vazamentos',
-        price: 'R$ 180',
+        price: 180,
         location: 'Consolação · São Paulo',
         imageUrl: 'https://picsum.photos/seed/service4/400/300',
         description:

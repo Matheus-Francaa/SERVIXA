@@ -1,0 +1,48 @@
+{
+  "name": "servixa-api",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Servixa API - Express + Drizzle + Better-Auth",
+  "scripts": {
+    "start": "node --env-file ../.env --import tsx src/index.ts",
+    "dev": "node --env-file ../.env --import tsx --watch src/index.ts",
+    "seed": "node --import tsx src/db/seed.ts",
+    "seed:users": "node --import tsx src/db/seed-users.ts",
+    "db:push": "drizzle-kit push",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "test": "node --import tsx src/db/reset-test-db.ts && vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint src/ tests/",
+    "lint:fix": "eslint src/ tests/ --fix",
+    "typecheck": "tsc --noEmit",
+    "typecheck:tests": "tsc --noEmit --project tsconfig.tests.json"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.33.0",
+  "dependencies": {
+    "@better-auth/drizzle-adapter": "^1.6.11",
+    "@ngrok/ngrok": "^1.7.0",
+    "better-auth": "^1.6.11",
+    "better-sqlite3": "^12.10.0",
+    "cors": "^2.8.5",
+    "drizzle-kit": "^0.31.10",
+    "drizzle-orm": "^0.45.2",
+    "express": "^5.2.1",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.0.0",
+    "@types/supertest": "^6.0.0",
+    "eslint": "^9.0.0",
+    "supertest": "^7.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.9.0",
+    "vitest": "^3.0.0"
+  }
+}

@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     FlatList,
     Image,
@@ -17,47 +17,31 @@ import { CategoryChip } from '../components/CategoryChip';
 import { ServiceCard } from '../components/ServiceCard';
 import { colors } from '../theme/colors';
 import { spacing } from '../theme/spacing';
+import { api } from '../services/api';
+import { useAuth } from '../contexts/AuthContext';
 
 export const HomeScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
+    const { user, signOut } = useAuth();
     const [selectedCategory, setSelectedCategory] = useState('1');
     const [searchQuery, setSearchQuery] = useState('');
+    const [categories, setCategories] = useState<any[]>([]);
+    const [services, setServices] = useState<any[]>([]);
 
-    const categories = [
-        { id: '1', label: 'Limpeza' },
-        { id: '2', label: 'Encanamento' },
-        { id: '3', label: 'Elétrica' },
-    ];
+    useEffect(() => {
+        api.categories.list().then(setCategories).catch(() => {});
+    }, []);
 
-    const services = [
-        {
-            id: '1',
-            title: 'Limpeza Residencial Completa',
-            price: 'R$ 250',
-            location: 'Centro · São Paulo',
-            imageUrl: 'https://picsum.photos/seed/service1/400/300',
-        },
-        {
-            id: '2',
-            title: 'Serviço de Encanamento Urgente',
-            price: 'R$ 150',
-            location: 'Vila Madalena · São Paulo',
-            imageUrl: 'https://picsum.photos/seed/service2/400/300',
-        },
-        {
-            id: '3',
-            title: 'Instalação Elétrica Residencial',
-            price: 'R$ 320',
-            location: 'Pinheiros · São Paulo',
-            imageUrl: 'https://picsum.photos/seed/service3/400/300',
-        },
-        {
-            id: '4',
-            title: 'Reparo em Vazamentos',
-            price: 'R$ 180',
-            location: 'Consolação · São Paulo',
-            imageUrl: 'https://picsum.photos/seed/service4/400/300',
-        },
-    ];
+    useEffect(() => {
+        api.services.list(selectedCategory === '1' ? undefined : selectedCategory)
+            .then(setServices)
+            .catch(() => {});
+    }, [selectedCategory]);
+
+    const filteredServices = searchQuery.trim()
+        ? services.filter((s) =>
+            s.title.toLowerCase().includes(searchQuery.toLowerCase())
+          )
+        : services;
 
     const handleServicePress = (service: any) => {
         navigation.navigate('ServiceDetail', { service });
@@ -72,18 +56,19 @@ export const HomeScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
                 showsVerticalScrollIndicator={false}
                 scrollEventThrottle={16}
             >
-                {/* Header com localização e notificações */}
                 <View style={styles.header}>
                     <View style={styles.locationContainer}>
                         <Ionicons name="location" size={18} color={colors.text.secondary} />
                         <Text style={styles.locationText}>St. N QNN 31 31 – 72225-310 ▸</Text>
                     </View>
-                    <TouchableOpacity>
-                        <Ionicons name="notifications" size={24} color={colors.text.primary} />
-                    </TouchableOpacity>
+                    <View style={styles.headerRight}>
+                        {user && <Text style={styles.userName}>{user.name}</Text>}
+                        <TouchableOpacity>
+                            <Ionicons name="notifications" size={24} color={colors.text.primary} />
+                        </TouchableOpacity>
+                    </View>
                 </View>
 
-                {/* Banner Hero */}
                 <View style={styles.bannerContainer}>
                     <Image
                         source={{ uri: 'https://picsum.photos/seed/banner/600/250' }}
@@ -97,7 +82,6 @@ export const HomeScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
                     </View>
                 </View>
 
-                {/* Barra de Busca */}
                 <View style={styles.searchContainer}>
                     <Ionicons
                         name="search"
@@ -114,7 +98,6 @@ export const HomeScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
                     />
                 </View>
 
-                {/* Categorias */}
                 <View style={styles.categoriesContainer}>
                     <FlatList
                         data={categories}
@@ -122,22 +105,21 @@ export const HomeScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
                         showsHorizontalScrollIndicator={false}
                         renderItem={({ item }) => (
                             <CategoryChip
-                                id={item.id}
+                                id={String(item.id)}
                                 label={item.label}
-                                selected={selectedCategory === item.id}
-                                onPress={() => setSelectedCategory(item.id)}
+                                selected={selectedCategory === String(item.id)}
+                                onPress={() => setSelectedCategory(String(item.id))}
                             />
                         )}
-                        keyExtractor={(item) => item.id}
+                        keyExtractor={(item) => String(item.id)}
                         scrollEventThrottle={16}
                     />
                 </View>
 
-                {/* Seção: Serviços Mais Procurados */}
                 <View style={styles.sectionContainer}>
                     <Text style={styles.sectionTitle}>Serviços mais procurados este mês</Text>
                     <FlatList
-                        data={services}
+                        data={filteredServices}
                         horizontal
                         showsHorizontalScrollIndicator={false}
                         renderItem={({ item }) => (
@@ -155,11 +137,10 @@ export const HomeScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
                     />
                 </View>
 
-                {/* Segunda Seção: Mais Serviços */}
                 <View style={styles.sectionContainer}>
                     <Text style={styles.sectionTitle}>Ofertas Especiais</Text>
                     <FlatList
-                        data={services.slice(2)}
+                        data={filteredServices.slice(2)}
                         horizontal
                         showsHorizontalScrollIndicator={false}
                         renderItem={({ item }) => (
@@ -180,7 +161,6 @@ export const HomeScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
                 <View style={{ height: 100 }} />
             </ScrollView>
 
-            {/* Bottom Tab Bar */}
             <BottomTabBar
                 activeTab="home"
                 onTabPress={(tab) => {
@@ -200,13 +180,8 @@ export const HomeScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: colors.background,
-    },
-    scrollView: {
-        flex: 1,
-    },
+    container: { flex: 1, backgroundColor: colors.background },
+    scrollView: { flex: 1 },
     header: {
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -214,16 +189,10 @@ const styles = StyleSheet.create({
         paddingHorizontal: spacing.lg,
         paddingVertical: spacing.md,
     },
-    locationContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: spacing.sm,
-    },
-    locationText: {
-        fontSize: 13,
-        color: colors.text.secondary,
-        fontWeight: '500',
-    },
+    headerRight: { flexDirection: 'row', alignItems: 'center', gap: spacing.md },
+    userName: { fontSize: 13, color: colors.text.secondary, fontWeight: '500' },
+    locationContainer: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
+    locationText: { fontSize: 13, color: colors.text.secondary, fontWeight: '500' },
     bannerContainer: {
         height: 200,
         marginHorizontal: spacing.lg,
@@ -232,10 +201,7 @@ const styles = StyleSheet.create({
         marginVertical: spacing.md,
         position: 'relative',
     },
-    bannerImage: {
-        width: '100%',
-        height: '100%',
-    },
+    bannerImage: { width: '100%', height: '100%' },
     bannerOverlay: {
         ...StyleSheet.absoluteFillObject,
         backgroundColor: 'rgba(0, 0, 0, 0.4)',
@@ -243,16 +209,8 @@ const styles = StyleSheet.create({
         paddingHorizontal: spacing.lg,
         paddingVertical: spacing.lg,
     },
-    bannerTitle: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        color: colors.surface,
-        marginBottom: spacing.sm,
-    },
-    bannerSubtitle: {
-        fontSize: 13,
-        color: colors.surface,
-    },
+    bannerTitle: { fontSize: 20, fontWeight: 'bold', color: colors.surface, marginBottom: spacing.sm },
+    bannerSubtitle: { fontSize: 13, color: colors.surface },
     searchContainer: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -264,22 +222,10 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: colors.border,
     },
-    searchIcon: {
-        marginRight: spacing.md,
-    },
-    searchInput: {
-        flex: 1,
-        height: 44,
-        fontSize: 14,
-        color: colors.text.primary,
-    },
-    categoriesContainer: {
-        paddingHorizontal: spacing.lg,
-        marginVertical: spacing.md,
-    },
-    sectionContainer: {
-        marginVertical: spacing.xl,
-    },
+    searchIcon: { marginRight: spacing.md },
+    searchInput: { flex: 1, height: 44, fontSize: 14, color: colors.text.primary },
+    categoriesContainer: { paddingHorizontal: spacing.lg, marginVertical: spacing.md },
+    sectionContainer: { marginVertical: spacing.xl },
     sectionTitle: {
         fontSize: 16,
         fontWeight: 'bold',

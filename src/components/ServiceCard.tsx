@@ -2,11 +2,12 @@ import React from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { colors } from '../theme/colors';
 import { spacing } from '../theme/spacing';
+import { formatPrice } from '../utils/format';
 
 interface ServiceCardProps {
     id: string;
     title: string;
-    price: string;
+    price: number;
     location: string;
     imageUrl: string;
     onPress: () => void;
@@ -20,6 +21,7 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
     imageUrl,
     onPress,
 }) => {
+    const formattedPrice = formatPrice(price);
     return (
         <TouchableOpacity onPress={onPress} style={styles.container}>
             <Image source={{ uri: imageUrl }} style={styles.image} />
@@ -27,7 +29,7 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
                 <Text style={styles.title} numberOfLines={2}>
                     {title}
                 </Text>
-                <Text style={styles.price}>{price}</Text>
+                <Text style={styles.price}>{formattedPrice}</Text>
                 <Text style={styles.location}>{location}</Text>
             </View>
         </TouchableOpacity>

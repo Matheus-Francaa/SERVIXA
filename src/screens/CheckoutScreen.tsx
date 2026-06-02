@@ -16,6 +16,7 @@ import { PaymentOption } from '../components/PaymentOption';
 import { colors } from '../theme/colors';
 import { spacing } from '../theme/spacing';
 import { api } from '../services/api';
+import { formatPrice } from '../utils/format';
 
 type PaymentIconType = keyof typeof MaterialCommunityIcons.glyphMap;
 
@@ -27,7 +28,8 @@ export const CheckoutScreen: React.FC<{ navigation: any; route: any }> = ({
     const [selectedPayment, setSelectedPayment] = useState('pix');
     const [processing, setProcessing] = useState(false);
 
-    const serviceValue = Number(service?.price ?? 150);
+    const rawPrice = Number(service?.price);
+    const serviceValue = isNaN(rawPrice) ? 150 : rawPrice;
     const serviceFee = +(serviceValue * 0.08).toFixed(2);
     const totalValue = +(serviceValue + serviceFee).toFixed(2);
 
@@ -104,16 +106,16 @@ export const CheckoutScreen: React.FC<{ navigation: any; route: any }> = ({
                 <View style={styles.summaryContainer}>
                     <View style={styles.summaryRow}>
                         <Text style={styles.summaryLabel}>Serviço</Text>
-                        <Text style={styles.summaryValue}>R$ {serviceValue.toFixed(2)}</Text>
+                        <Text style={styles.summaryValue}>{formatPrice(serviceValue)}</Text>
                     </View>
                     <View style={styles.summaryRow}>
                         <Text style={styles.summaryLabel}>Taxa de serviço</Text>
-                        <Text style={styles.summaryValue}>R$ {serviceFee.toFixed(2)}</Text>
+                        <Text style={styles.summaryValue}>{formatPrice(serviceFee)}</Text>
                     </View>
                     <View style={styles.separator} />
                     <View style={styles.summaryRow}>
                         <Text style={styles.totalLabel}>Total a Pagar</Text>
-                        <Text style={styles.totalValue}>R$ {totalValue.toFixed(2)}</Text>
+                        <Text style={styles.totalValue}>{formatPrice(totalValue)}</Text>
                     </View>
                 </View>
 
@@ -126,7 +128,7 @@ export const CheckoutScreen: React.FC<{ navigation: any; route: any }> = ({
             <View style={styles.paymentButtonContainer}>
                 <TouchableOpacity style={[styles.payButton, processing && { opacity: 0.6 }]} onPress={handlePayment} disabled={processing}>
                     <Text style={styles.payButtonText}>
-                        {processing ? 'Processando...' : `Pagar R$ ${totalValue.toFixed(2)} agora`}
+                        {processing ? 'Processando...' : `Pagar ${formatPrice(totalValue)} agora`}
                     </Text>
                 </TouchableOpacity>
             </View>

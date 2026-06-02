@@ -2,6 +2,7 @@ import React from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { colors } from '../theme/colors';
 import { spacing } from '../theme/spacing';
+import { formatPrice } from '../utils/format';
 
 interface ServiceCardProps {
     id: string;
@@ -20,7 +21,7 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
     imageUrl,
     onPress,
 }) => {
-    const formattedPrice = `R$ ${price.toFixed(2).replace('.', ',')}`;
+    const formattedPrice = formatPrice(price);
     return (
         <TouchableOpacity onPress={onPress} style={styles.container}>
             <Image source={{ uri: imageUrl }} style={styles.image} />

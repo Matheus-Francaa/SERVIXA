@@ -10,6 +10,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { BottomTabBar } from '../components/BottomTabBar';
 import { colors } from '../theme/colors';
 import { spacing } from '../theme/spacing';
+import { formatPrice } from '../utils/format';
 
 export const SuccessScreen: React.FC<{ navigation: any; route: any }> = ({
     navigation,
@@ -70,7 +71,7 @@ export const SuccessScreen: React.FC<{ navigation: any; route: any }> = ({
                     </View>
                     <View style={styles.detailRow}>
                         <Text style={styles.detailLabel}>Valor Total</Text>
-                        <Text style={styles.detailValue}>R$ {amount.toFixed(2)}</Text>
+                        <Text style={styles.detailValue}>{formatPrice(amount)}</Text>
                     </View>
                 </View>
 

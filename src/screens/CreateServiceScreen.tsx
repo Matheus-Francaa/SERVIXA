@@ -37,7 +37,7 @@ export const CreateServiceScreen: React.FC<{ navigation: any }> = ({
         if (!pricePerHour.trim()) { Alert.alert('Erro', 'Preço por hora é obrigatório'); return; }
         if (!selectedCategory) { Alert.alert('Erro', 'Selecione uma categoria'); return; }
 
-        const price = parseFloat(pricePerHour);
+        const price = parseFloat(pricePerHour.replace(',', '.'));
         if (isNaN(price) || price <= 0) { Alert.alert('Erro', 'Preço inválido'); return; }
 
         setSubmitting(true);

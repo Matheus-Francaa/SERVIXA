@@ -17,6 +17,11 @@ interface AuthContextType {
   signOut: () => Promise<void>;
 }
 
+interface AuthResponse {
+  user?: User;
+  token?: string;
+}
+
 const AuthContext = createContext<AuthContextType>({
   user: null, loading: true,
   signIn: async () => {}, signUp: async () => {}, signOut: async () => {},
@@ -39,7 +44,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const signIn = useCallback(async (email: string, password: string) => {
-    const data: any = await api.auth.signIn({ email, password });
+    const data = await api.auth.signIn({ email, password }) as AuthResponse;
     if (data?.user) {
       setUser(data.user);
       await storage.setUser(data.user);
@@ -47,7 +52,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const signUp = useCallback(async (name: string, email: string, password: string) => {
-    const data: any = await api.auth.signUp({ name, email, password });
+    const data = await api.auth.signUp({ name, email, password }) as AuthResponse;
     if (data?.user) {
       setUser(data.user);
       await storage.setUser(data.user);

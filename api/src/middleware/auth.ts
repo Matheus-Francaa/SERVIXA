@@ -26,6 +26,22 @@ type SessionResult = {
   session: SessionData;
 } | null;
 
+function setRequestSession(req: Request, result: SessionResult) {
+  if (!result?.user) return;
+  const { user, session: s } = result;
+  req.user = user;
+  req.session = {
+    id: s.id,
+    userId: s.userId,
+    token: s.token,
+    expiresAt: Number(s.expiresAt),
+    createdAt: String(s.createdAt),
+    updatedAt: String(s.updatedAt),
+    ipAddress: s.ipAddress,
+    userAgent: s.userAgent,
+  };
+}
+
 export function requireAuth(auth: AuthInstance) {
   return async (req: Request, _res: Response, next: NextFunction) => {
     const result = await (auth.api.getSession({
@@ -36,19 +52,7 @@ export function requireAuth(auth: AuthInstance) {
       throw new UnauthorizedError();
     }
 
-    const { user, session: s } = result;
-
-    req.user = user;
-    req.session = {
-      id: s.id,
-      userId: s.userId,
-      token: s.token,
-      expiresAt: Number(s.expiresAt),
-      createdAt: String(s.createdAt),
-      updatedAt: String(s.updatedAt),
-      ipAddress: s.ipAddress,
-      userAgent: s.userAgent,
-    };
+    setRequestSession(req, result);
     next();
   };
 }
@@ -60,21 +64,7 @@ export function optionalAuth(auth: AuthInstance) {
         headers: fromNodeHeaders(req.headers),
       }) as Promise<SessionResult>);
 
-      if (result?.user) {
-        const { user, session: s } = result;
-
-        req.user = user;
-        req.session = {
-          id: s.id,
-          userId: s.userId,
-          token: s.token,
-          expiresAt: Number(s.expiresAt),
-          createdAt: String(s.createdAt),
-          updatedAt: String(s.updatedAt),
-          ipAddress: s.ipAddress,
-          userAgent: s.userAgent,
-        };
-      }
+      setRequestSession(req, result);
     } catch {
       // not authenticated, continue
     }

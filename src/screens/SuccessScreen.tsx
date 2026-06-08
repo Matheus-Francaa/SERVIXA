@@ -1,16 +1,23 @@
 import { Ionicons } from '@expo/vector-icons';
 import React, { useEffect } from 'react';
 import {
+    Pressable,
     StyleSheet,
     Text,
-    TouchableOpacity,
     View,
 } from 'react-native';
+import Animated from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { BottomTabBar } from '../components/BottomTabBar';
 import { colors } from '../theme/colors';
 import { spacing } from '../theme/spacing';
 import { formatPrice } from '../utils/format';
+import {
+  BOUNCE_IN,
+  FADE_IN_UP,
+  ZOOM_IN,
+  staggeredEntrance,
+} from '../utils/animations';
 
 export const SuccessScreen: React.FC<{ navigation: any; route: any }> = ({
     navigation,
@@ -38,10 +45,8 @@ export const SuccessScreen: React.FC<{ navigation: any; route: any }> = ({
 
     return (
         <SafeAreaView style={styles.container} edges={['top']}>
-            {/* Success Content */}
             <View style={styles.content}>
-                {/* Success Icon */}
-                <View style={styles.iconContainer}>
+                <Animated.View entering={BOUNCE_IN} style={styles.iconContainer}>
                     <View style={styles.checkCircle}>
                         <Ionicons
                             name="checkmark"
@@ -49,18 +54,17 @@ export const SuccessScreen: React.FC<{ navigation: any; route: any }> = ({
                             color={colors.surface}
                         />
                     </View>
-                </View>
+                </Animated.View>
 
-                {/* Success Title */}
-                <Text style={styles.title}>Pagamento Confirmado!</Text>
+                <Animated.Text entering={FADE_IN_UP} style={styles.title}>
+                    Pagamento Confirmado!
+                </Animated.Text>
 
-                {/* Success Message */}
-                <Text style={styles.message}>
+                <Animated.Text entering={staggeredEntrance(200)} style={styles.message}>
                     Sua contratação foi realizada com sucesso
-                </Text>
+                </Animated.Text>
 
-                {/* Service Details */}
-                <View style={styles.detailsContainer}>
+                <Animated.View entering={staggeredEntrance(300)} style={styles.detailsContainer}>
                     <View style={styles.detailRow}>
                         <Text style={styles.detailLabel}>Serviço</Text>
                         <Text style={styles.detailValue}>{service.title}</Text>
@@ -73,10 +77,9 @@ export const SuccessScreen: React.FC<{ navigation: any; route: any }> = ({
                         <Text style={styles.detailLabel}>Valor Total</Text>
                         <Text style={styles.detailValue}>{formatPrice(amount)}</Text>
                     </View>
-                </View>
+                </Animated.View>
 
-                {/* Info Box */}
-                <View style={styles.infoBox}>
+                <Animated.View entering={staggeredEntrance(500)} style={styles.infoBox}>
                     <Ionicons
                         name="information-circle"
                         size={20}
@@ -85,20 +88,18 @@ export const SuccessScreen: React.FC<{ navigation: any; route: any }> = ({
                     <Text style={styles.infoText}>
                         O prestador foi notificado e em breve entrará em contato
                     </Text>
-                </View>
+                </Animated.View>
             </View>
 
-            {/* Button Container */}
-            <View style={styles.buttonContainer}>
-                <TouchableOpacity
+            <Animated.View entering={FADE_IN_UP} style={styles.buttonContainer}>
+                <Pressable
                     style={styles.primaryButton}
                     onPress={() => navigation.navigate('Home')}
                 >
                     <Text style={styles.buttonText}>Voltar para Home</Text>
-                </TouchableOpacity>
-            </View>
+                </Pressable>
+            </Animated.View>
 
-            {/* Bottom Tab Bar */}
             <BottomTabBar
                 activeTab="home"
                 onTabPress={(tab) => {
@@ -176,9 +177,6 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         marginBottom: spacing.lg,
-    },
-    detailRow_last: {
-        marginBottom: 0,
     },
     detailLabel: {
         fontSize: 14,

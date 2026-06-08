@@ -11,6 +11,7 @@ import {
     TouchableOpacity,
     View,
 } from 'react-native';
+import Animated from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { BottomTabBar } from '../components/BottomTabBar';
 import { CategoryChip } from '../components/CategoryChip';
@@ -19,6 +20,12 @@ import { colors } from '../theme/colors';
 import { spacing } from '../theme/spacing';
 import { api } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
+import {
+  FADE_IN_DOWN,
+  FADE_IN_UP,
+  SLIDE_IN_RIGHT,
+  staggeredEntrance,
+} from '../utils/animations';
 
 export const HomeScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
     const { user, signOut } = useAuth();
@@ -56,7 +63,7 @@ export const HomeScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
                 showsVerticalScrollIndicator={false}
                 scrollEventThrottle={16}
             >
-                <View style={styles.header}>
+                <Animated.View entering={FADE_IN_DOWN} style={styles.header}>
                     <View style={styles.locationContainer}>
                         <Ionicons name="location" size={18} color={colors.text.secondary} />
                         <Text style={styles.locationText}>St. N QNN 31 31 – 72225-310 ▸</Text>
@@ -67,9 +74,9 @@ export const HomeScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
                             <Ionicons name="notifications" size={24} color={colors.text.primary} />
                         </TouchableOpacity>
                     </View>
-                </View>
+                </Animated.View>
 
-                <View style={styles.bannerContainer}>
+                <Animated.View entering={FADE_IN_UP} style={styles.bannerContainer}>
                     <Image
                         source={{ uri: 'https://picsum.photos/seed/banner/600/250' }}
                         style={styles.bannerImage}
@@ -80,9 +87,9 @@ export const HomeScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
                             Encontre os melhores prestadores perto de você
                         </Text>
                     </View>
-                </View>
+                </Animated.View>
 
-                <View style={styles.searchContainer}>
+                <Animated.View entering={SLIDE_IN_RIGHT} style={styles.searchContainer}>
                     <Ionicons
                         name="search"
                         size={20}
@@ -96,7 +103,7 @@ export const HomeScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
                         value={searchQuery}
                         onChangeText={setSearchQuery}
                     />
-                </View>
+                </Animated.View>
 
                 <View style={styles.categoriesContainer}>
                     <FlatList
@@ -117,7 +124,9 @@ export const HomeScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
                 </View>
 
                 <View style={styles.sectionContainer}>
-                    <Text style={styles.sectionTitle}>Serviços mais procurados este mês</Text>
+                    <Animated.Text entering={FADE_IN_DOWN} style={styles.sectionTitle}>
+                        Serviços mais procurados este mês
+                    </Animated.Text>
                     <FlatList
                         data={filteredServices}
                         horizontal
@@ -137,26 +146,30 @@ export const HomeScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
                     />
                 </View>
 
-                <View style={styles.sectionContainer}>
-                    <Text style={styles.sectionTitle}>Ofertas Especiais</Text>
-                    <FlatList
-                        data={filteredServices.slice(2)}
-                        horizontal
-                        showsHorizontalScrollIndicator={false}
-                        renderItem={({ item }) => (
-                            <ServiceCard
-                                id={item.id}
-                                title={item.title}
-                                price={item.price}
-                                location={item.location}
-                                imageUrl={item.imageUrl}
-                                onPress={() => handleServicePress(item)}
-                            />
-                        )}
-                        keyExtractor={(item) => item.id}
-                        scrollEventThrottle={16}
-                    />
-                </View>
+                {filteredServices.length > 2 && (
+                    <View style={styles.sectionContainer}>
+                        <Animated.Text entering={staggeredEntrance(200)} style={styles.sectionTitle}>
+                            Ofertas Especiais
+                        </Animated.Text>
+                        <FlatList
+                            data={filteredServices.slice(2)}
+                            horizontal
+                            showsHorizontalScrollIndicator={false}
+                            renderItem={({ item }) => (
+                                <ServiceCard
+                                    id={item.id}
+                                    title={item.title}
+                                    price={item.price}
+                                    location={item.location}
+                                    imageUrl={item.imageUrl}
+                                    onPress={() => handleServicePress(item)}
+                                />
+                            )}
+                            keyExtractor={(item) => item.id}
+                            scrollEventThrottle={16}
+                        />
+                    </View>
+                )}
 
                 <View style={{ height: 100 }} />
             </ScrollView>

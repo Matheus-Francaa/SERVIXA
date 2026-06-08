@@ -1,8 +1,14 @@
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+} from 'react-native-reanimated';
 import { colors } from '../theme/colors';
 import { spacing } from '../theme/spacing';
+import { SPRING_CONFIG } from '../utils/animations';
 
 interface BottomTabBarProps {
     activeTab: string;
@@ -28,31 +34,64 @@ export const BottomTabBar: React.FC<BottomTabBarProps> = ({
                 const isAnnounce = tab.id === 'announce';
 
                 return (
-                    <TouchableOpacity
+                    <TabItem
                         key={tab.id}
-                        style={[
-                            styles.tab,
-                            isAnnounce && styles.announceTab,
-                        ]}
+                        tab={tab}
+                        isActive={isActive}
+                        isAnnounce={isAnnounce}
                         onPress={() => onTabPress(tab.id)}
-                    >
-                        <Ionicons
-                            name={tab.icon as any}
-                            size={isAnnounce ? 40 : 24}
-                            color={
-                                isAnnounce
-                                    ? colors.surface
-                                    : isActive
-                                        ? colors.primary
-                                        : colors.text.secondary
-                            }
-                        />
-                    </TouchableOpacity>
+                    />
                 );
             })}
         </View>
     );
 };
+
+interface TabItemProps {
+    tab: { id: string; icon: string; label: string };
+    isActive: boolean;
+    isAnnounce: boolean;
+    onPress: () => void;
+}
+
+const TabItem: React.FC<TabItemProps> = React.memo(({ tab, isActive, isAnnounce, onPress }) => {
+    const scale = useSharedValue(1);
+
+    const animatedStyle = useAnimatedStyle(() => ({
+        transform: [{ scale: scale.value }],
+    }));
+
+    const handlePressIn = () => {
+        scale.value = withSpring(isAnnounce ? 0.95 : 0.85, SPRING_CONFIG);
+    };
+
+    const handlePressOut = () => {
+        scale.value = withSpring(1, SPRING_CONFIG);
+    };
+
+    return (
+        <Pressable
+            onPress={onPress}
+            onPressIn={handlePressIn}
+            onPressOut={handlePressOut}
+            style={[styles.tab, isAnnounce && styles.announceTab]}
+        >
+            <Animated.View style={animatedStyle}>
+                <Ionicons
+                    name={tab.icon as any}
+                    size={isAnnounce ? 40 : 24}
+                    color={
+                        isAnnounce
+                            ? colors.surface
+                            : isActive
+                                ? colors.primary
+                                : colors.text.secondary
+                    }
+                />
+            </Animated.View>
+        </Pressable>
+    );
+});
 
 const styles = StyleSheet.create({
     container: {

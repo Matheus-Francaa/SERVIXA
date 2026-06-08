@@ -1,8 +1,14 @@
 import React from 'react';
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+} from 'react-native-reanimated';
 import { colors } from '../theme/colors';
 import { spacing } from '../theme/spacing';
 import { formatPrice } from '../utils/format';
+import { FADE_IN_UP, SPRING_CONFIG } from '../utils/animations';
 
 interface ServiceCardProps {
     id: string;
@@ -21,18 +27,40 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
     imageUrl,
     onPress,
 }) => {
+    const scale = useSharedValue(1);
     const formattedPrice = formatPrice(price);
+
+    const animatedStyle = useAnimatedStyle(() => ({
+        transform: [{ scale: scale.value }],
+    }));
+
+    const handlePressIn = () => {
+        scale.value = withSpring(0.95, SPRING_CONFIG);
+    };
+
+    const handlePressOut = () => {
+        scale.value = withSpring(1, SPRING_CONFIG);
+    };
+
     return (
-        <TouchableOpacity onPress={onPress} style={styles.container}>
-            <Image source={{ uri: imageUrl }} style={styles.image} />
-            <View style={styles.content}>
-                <Text style={styles.title} numberOfLines={2}>
-                    {title}
-                </Text>
-                <Text style={styles.price}>{formattedPrice}</Text>
-                <Text style={styles.location}>{location}</Text>
-            </View>
-        </TouchableOpacity>
+        <Animated.View entering={FADE_IN_UP}>
+            <Pressable
+                onPress={onPress}
+                onPressIn={handlePressIn}
+                onPressOut={handlePressOut}
+            >
+                <Animated.View style={[styles.container, animatedStyle]}>
+                    <Image source={{ uri: imageUrl }} style={styles.image} />
+                    <View style={styles.content}>
+                        <Text style={styles.title} numberOfLines={2}>
+                            {title}
+                        </Text>
+                        <Text style={styles.price}>{formattedPrice}</Text>
+                        <Text style={styles.location}>{location}</Text>
+                    </View>
+                </Animated.View>
+            </Pressable>
+        </Animated.View>
     );
 };
 

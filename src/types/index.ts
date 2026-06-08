@@ -13,6 +13,8 @@ export interface Service {
     data?: string;
     userId?: string;
     categoryId?: number;
+    latitude?: number;
+    longitude?: number;
 }
 
 export interface Category {

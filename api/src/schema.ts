@@ -66,6 +66,8 @@ export const services = sqliteTable("services", {
   avaliacao: text("avaliacao"),
   avaliacoes: text("avaliacoes"),
   data: text("data"),
+  latitude: real("latitude"),
+  longitude: real("longitude"),
   categoryId: integer("categoryId")
     .notNull()
     .references(() => categories.id),

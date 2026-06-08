@@ -14,5 +14,14 @@ describe("GET /api/categories", () => {
     const res = await request(app).get("/api/categories");
     expect(res.status).toBe(200);
     expect(Array.isArray(res.body)).toBe(true);
+    expect(res.body.length).toBe(3);
+  });
+
+  it("returns categories with id and label", async () => {
+    const res = await request(app).get("/api/categories");
+    res.body.forEach((cat: any) => {
+      expect(cat).toHaveProperty("id");
+      expect(cat).toHaveProperty("label");
+    });
   });
 });

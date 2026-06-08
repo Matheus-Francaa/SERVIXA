@@ -3,6 +3,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import {
     FlatList,
     Image,
+    Pressable,
     StatusBar,
     StyleSheet,
     Text,
@@ -10,12 +11,20 @@ import {
     TouchableOpacity,
     View,
 } from 'react-native';
+import Animated from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { BottomTabBar } from '../components/BottomTabBar';
 import { colors } from '../theme/colors';
 import { spacing } from '../theme/spacing';
 import { api } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
+import {
+  FADE_IN_DOWN,
+  FADE_IN_LEFT,
+  FADE_IN_RIGHT,
+  SLIDE_IN_UP,
+  staggeredEntrance,
+} from '../utils/animations';
 
 interface Message {
     id: string;
@@ -67,7 +76,10 @@ export const ChatScreen: React.FC<{ navigation: any; route: any }> = ({
     const renderMessageItem = ({ item }: { item: Message }) => {
         const isUser = item.senderId === user?.id;
         return (
-            <View style={[styles.messageContainer, isUser && styles.userMessageContainer]}>
+            <Animated.View
+                entering={isUser ? FADE_IN_RIGHT : FADE_IN_LEFT}
+                style={[styles.messageContainer, isUser && styles.userMessageContainer]}
+            >
                 {!isUser && prestador?.image && (
                     <Image source={{ uri: prestador.image }} style={styles.messageAvatar} />
                 )}
@@ -82,14 +94,14 @@ export const ChatScreen: React.FC<{ navigation: any; route: any }> = ({
                         {new Date(item.timestamp).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
                     </Text>
                 </View>
-            </View>
+            </Animated.View>
         );
     };
 
     return (
         <SafeAreaView style={styles.container} edges={['top']}>
             <StatusBar barStyle="dark-content" backgroundColor={colors.background} />
-            <View style={styles.header}>
+            <Animated.View entering={FADE_IN_DOWN} style={styles.header}>
                 <TouchableOpacity onPress={() => navigation.goBack()}>
                     <Ionicons name="chevron-back" size={28} color={colors.primary} />
                 </TouchableOpacity>
@@ -109,7 +121,7 @@ export const ChatScreen: React.FC<{ navigation: any; route: any }> = ({
                 <TouchableOpacity>
                     <Ionicons name="call" size={24} color={colors.primary} />
                 </TouchableOpacity>
-            </View>
+            </Animated.View>
 
             <FlatList
                 data={messages.slice().reverse()}
@@ -120,7 +132,7 @@ export const ChatScreen: React.FC<{ navigation: any; route: any }> = ({
                 inverted
             />
 
-            <View style={styles.inputContainer}>
+            <Animated.View entering={SLIDE_IN_UP} style={styles.inputContainer}>
                 <View style={styles.inputWrapper}>
                     <TextInput
                         style={styles.input}
@@ -130,7 +142,7 @@ export const ChatScreen: React.FC<{ navigation: any; route: any }> = ({
                         onChangeText={setInputText}
                         multiline
                     />
-                    <TouchableOpacity
+                    <Pressable
                         style={styles.sendButton}
                         onPress={handleSendMessage}
                         disabled={inputText.trim() === ''}
@@ -140,9 +152,9 @@ export const ChatScreen: React.FC<{ navigation: any; route: any }> = ({
                             size={20}
                             color={inputText.trim() === '' ? colors.text.secondary : colors.primary}
                         />
-                    </TouchableOpacity>
+                    </Pressable>
                 </View>
-            </View>
+            </Animated.View>
 
             <BottomTabBar
                 activeTab="chat"

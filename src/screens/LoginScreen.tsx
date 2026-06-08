@@ -5,18 +5,25 @@ import {
   Alert,
   KeyboardAvoidingView,
   Platform,
+  Pressable,
   StatusBar,
   StyleSheet,
   Text,
   TextInput,
-  TouchableOpacity,
   View,
 } from "react-native";
+import Animated from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { colors } from "../theme/colors";
 import { spacing } from "../theme/spacing";
 import { useAuth } from "../contexts/AuthContext";
 import { DemoLoginButton } from "../components/DemoLoginButton";
+import {
+  FADE_IN_DOWN,
+  FADE_IN_UP,
+  ZOOM_IN,
+  staggeredEntrance,
+} from "../utils/animations";
 
 export const LoginScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
   const { signIn } = useAuth();
@@ -47,59 +54,70 @@ export const LoginScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
         style={styles.content}
         behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
-        <View style={styles.logoContainer}>
+        <Animated.View entering={FADE_IN_DOWN} style={styles.logoContainer}>
           <Text style={styles.logoText}>SERVIXA</Text>
           <Text style={styles.subtitle}>Encontre os melhores serviços</Text>
-        </View>
+        </Animated.View>
 
         <View style={styles.form}>
-          <TextInput
-            style={styles.input}
-            placeholder="Email"
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
-            autoCapitalize="none"
-            placeholderTextColor={colors.text.secondary}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Senha"
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry
-            placeholderTextColor={colors.text.secondary}
-          />
+          <Animated.View entering={staggeredEntrance(100)}>
+            <TextInput
+              style={styles.input}
+              placeholder="Email"
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+              autoCapitalize="none"
+              placeholderTextColor={colors.text.secondary}
+            />
+          </Animated.View>
 
-          <TouchableOpacity
-            style={[styles.button, loading && styles.buttonDisabled]}
-            onPress={handleLogin}
-            disabled={loading}
-          >
-            {loading ? (
-              <ActivityIndicator color={colors.surface} />
-            ) : (
-              <Text style={styles.buttonText}>Entrar</Text>
-            )}
-          </TouchableOpacity>
+          <Animated.View entering={staggeredEntrance(200)}>
+            <TextInput
+              style={styles.input}
+              placeholder="Senha"
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry
+              placeholderTextColor={colors.text.secondary}
+            />
+          </Animated.View>
 
-          <TouchableOpacity
-            style={styles.linkButton}
-            onPress={() => navigation.navigate("Register")}
-          >
-            <Text style={styles.linkText}>
-              Não tem conta? <Text style={styles.linkBold}>Cadastre-se</Text>
-            </Text>
-          </TouchableOpacity>
+          <Animated.View entering={staggeredEntrance(300)}>
+            <Pressable
+              style={[styles.button, loading && styles.buttonDisabled]}
+              onPress={handleLogin}
+              disabled={loading}
+            >
+              {loading ? (
+                <ActivityIndicator color={colors.surface} />
+              ) : (
+                <Text style={styles.buttonText}>Entrar</Text>
+              )}
+            </Pressable>
+          </Animated.View>
+
+          <Animated.View entering={staggeredEntrance(400)}>
+            <Pressable
+              style={styles.linkButton}
+              onPress={() => navigation.navigate("Register")}
+            >
+              <Text style={styles.linkText}>
+                Não tem conta? <Text style={styles.linkBold}>Cadastre-se</Text>
+              </Text>
+            </Pressable>
+          </Animated.View>
         </View>
 
-        <View style={styles.demoDivider}>
+        <Animated.View entering={staggeredEntrance(500)} style={styles.demoDivider}>
           <View style={styles.demoLine} />
           <Text style={styles.demoOr}>ou</Text>
           <View style={styles.demoLine} />
-        </View>
+        </Animated.View>
 
-        <DemoLoginButton onSuccess={() => navigation.reset({ index: 0, routes: [{ name: "Home" }] })} />
+        <Animated.View entering={ZOOM_IN}>
+          <DemoLoginButton onSuccess={() => navigation.reset({ index: 0, routes: [{ name: "Home" }] })} />
+        </Animated.View>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );

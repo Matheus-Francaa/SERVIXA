@@ -21,7 +21,7 @@ import { FADE_IN_DOWN } from '../utils/animations';
 
 const multiMapHTML = (markers: { lat: number; lng: number; title: string; location: string }[]) => {
   const markersJS = markers.map(m =>
-    `{ lat: ${m.lat}, lng: ${m.lng}, title: '${m.title.replace(/'/g, "\\'")}', loc: '${m.location.replace(/'/g, "\\'")}' }`
+    `{ lat: ${m.lat}, lng: ${m.lng}, title: ${JSON.stringify(m.title)}, loc: ${JSON.stringify(m.location)} }`
   ).join(',\n    ');
   return `
 <!DOCTYPE html>

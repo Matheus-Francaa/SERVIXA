@@ -74,8 +74,6 @@ ou com ngrok e zerando o cache(pode ser necessário a depender da rede):
 ```bash
 npx expo start -c --tunnel 
 ```
-```
-```
 ## Scripts da API
 
 | Comando | Descrição |

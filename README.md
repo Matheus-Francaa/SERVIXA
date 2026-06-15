@@ -130,5 +130,10 @@ Para testar o app em um **dispositivo físico** (Android/iOS), você precisa exp
 
 ```
 
-O frontend (Expo) lê `EXPO_PUBLIC_API_URL` do `.env` para saber para onde apontar as requisições.
->>>>>>> api
+## equipe de desenvolvimento
+* Gustavo de Castro - UC24200806  -- Desenvolvimento back-end/ Versionamento/ Autenticação 
+* Ricardo Marques - UC24200674    -- Desenvolvimento back-end/ Banco de Dados/ Integração com front-end
+* Victor Hugo - UC24200221        -- Desenvolvimento back-end/ Banco de dados/ Documentação 
+* Matheus Franca - UC24100886     -- Desenvolvimento front-end/ Design e Modelagem Figma/ Versionamento  
+* Daniel Cardoso - UC24200358     -- Desenvolvimento front-end/ Design e Modelagem Figma/ Refatoração 
+* Kauã Kairon - UC24102957        -- Desenvolvimento front-end/ Documentação/ Animações
